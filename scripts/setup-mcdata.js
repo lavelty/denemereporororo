@@ -3,6 +3,15 @@ const path = require('path')
 
 function setupMinecraftData () {
   console.log('[setup-mcdata] Initializing Minecraft 26.3 patch for Render / CI / Local...')
+  
+  // 1. Remove nested outdated minecraft-protocol inside mineflayer if present
+  const nestedProtocol = path.join(__dirname, '..', 'node_modules', 'mineflayer', 'node_modules', 'minecraft-protocol')
+  if (fs.existsSync(nestedProtocol)) {
+    console.log('[setup-mcdata] Removing outdated nested minecraft-protocol from mineflayer...')
+    fs.rmSync(nestedProtocol, { recursive: true, force: true })
+  }
+
+  // 2. Patch minecraft-data with 26.3 tables
   const mcDataDir = path.join(__dirname, '..', 'node_modules', 'minecraft-data')
   if (!fs.existsSync(mcDataDir)) {
     console.log('[setup-mcdata] node_modules/minecraft-data not found, skipping.')

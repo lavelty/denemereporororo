@@ -82,20 +82,26 @@ function spawnBot(config, index) {
   bot.once("spawn", () => {
     if (!isRunning) return;
     io.emit("log", `[${username}] sunucuya bağlandı.`);
+    io.emit("status", { running: isRunning, activeCount: activeBots.size });
 
     const timers = botTimers.get(index) || {};
 
-    const chatInterval = Math.max(Number(config.chatIntervalMs) || 1000, 200);
-    timers.chatTimer = setInterval(() => {
-      if (!isRunning || !bot.player) return;
-      try {
-        bot.chat(config.message || "Hello world");
-        io.emit("log", `[${username}] mesaj gönderdi.`);
-      } catch (err) {
-        io.emit("log", `[${username}] mesaj hatası: ${err.message}`);
-      }
-    }, chatInterval);
+    // Chat timer - only if explicitly enabled and message is provided
+    const enableChat = config.enableChat === true || config.enableChat === "true";
+    if (enableChat && config.message && config.message.trim()) {
+      const chatInterval = Math.max(Number(config.chatIntervalMs) || 5000, 1000);
+      timers.chatTimer = setInterval(() => {
+        if (!isRunning || !bot.player) return;
+        try {
+          bot.chat(config.message.trim());
+          io.emit("log", `[${username}] mesaj gönderdi.`);
+        } catch (err) {
+          io.emit("log", `[${username}] mesaj hatası: ${err.message}`);
+        }
+      }, chatInterval);
+    }
 
+    // Move timer
     const moveInterval = Math.max(Number(config.moveIntervalMs) || 1500, 400);
     timers.moveTimer = setInterval(() => {
       if (!isRunning || !bot.entity) return;
@@ -116,6 +122,8 @@ function spawnBot(config, index) {
 
   bot.on("end", (reason) => {
     activeBots.delete(index);
+    io.emit("status", { running: isRunning, activeCount: activeBots.size });
+
     const timers = botTimers.get(index);
     if (timers) {
       if (timers.chatTimer) clearInterval(timers.chatTimer);
@@ -139,11 +147,15 @@ function scheduleReconnect(config, index) {
   const timers = botTimers.get(index) || {};
   if (timers.reconnectTimeout) clearTimeout(timers.reconnectTimeout);
 
+  // Stagger reconnects so all bots do not hit the server at the exact same millisecond (avoids ECONNRESET)
+  const baseInterval = Math.max(Number(config.spawnIntervalMs) || 2000, 1000);
+  const reconnectDelay = 3000 + (index * baseInterval) + Math.floor(Math.random() * 1000);
+
   timers.reconnectTimeout = setTimeout(() => {
     if (isRunning && currentConfig) {
       spawnBot(currentConfig, index);
     }
-  }, 2500);
+  }, reconnectDelay);
 
   botTimers.set(index, timers);
 }
@@ -164,13 +176,15 @@ io.on("connection", (socket) => {
     currentConfig = { ...config };
 
     const count = Math.min(Math.max(Number(config.count) || 1, 1), 50);
+    const spawnInterval = Math.max(Number(config.spawnIntervalMs) || 2000, 500);
+
     io.emit("status", { running: true, activeCount: 0 });
-    io.emit("log", `${count} bot başlatılıyor -> ${config.host.trim()}:${Number(config.port) || 25565}`);
+    io.emit("log", `${count} bot ${spawnInterval}ms aralıklarla başlatılıyor -> ${config.host.trim()}:${Number(config.port) || 25565}`);
 
     for (let i = 0; i < count; i++) {
       setTimeout(() => {
         if (isRunning) spawnBot(currentConfig, i);
-      }, i * 300);
+      }, i * spawnInterval);
     }
   });
 
@@ -184,4 +198,3 @@ io.on("connection", (socket) => {
 server.listen(PORT, () => {
   console.log(`Sunucu ${PORT} portunda çalışıyor.`);
 });
-

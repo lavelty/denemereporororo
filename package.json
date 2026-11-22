@@ -17,5 +17,10 @@
     "prismarine-chunk": "git+https://github.com/suisarbre/prismarine-chunk.git#port-26.3",
     "prismarine-physics": "git+https://github.com/suisarbre/prismarine-physics.git#port-26.3",
     "socket.io": "^4.8.0"
+  },
+  "overrides": {
+    "mineflayer": {
+      "minecraft-protocol": "git+https://github.com/suisarbre/node-minecraft-protocol.git#port-26.3"
+    }
   }
 }

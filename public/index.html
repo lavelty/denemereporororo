@@ -43,6 +43,26 @@
       color: #fff;
       font-size: 14px;
     }
+    .checkbox-field {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #181d26;
+      border-radius: 8px;
+      border: 1px solid #232a35;
+    }
+    .checkbox-field input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    .checkbox-field label {
+      cursor: pointer;
+      font-size: 13px;
+      color: #e1e7f0;
+    }
     .actions {
       margin-top: 14px;
       display: flex;
@@ -102,16 +122,25 @@
       <input id="version" value="auto" placeholder="auto veya 26.3" />
     </div>
     <div class="field">
+      <label for="spawnIntervalMs">Giriş Gecikmesi (ms - Aternos için 2000 önerilir)</label>
+      <input id="spawnIntervalMs" type="number" value="2000" min="500" />
+    </div>
+    <div class="field">
       <label for="message">Sohbet Mesajı</label>
       <input id="message" value="Hello world" />
     </div>
     <div class="field">
       <label for="chatIntervalMs">Mesaj Aralığı (ms)</label>
-      <input id="chatIntervalMs" type="number" value="1000" min="200" />
+      <input id="chatIntervalMs" type="number" value="5000" min="500" />
     </div>
     <div class="field">
       <label for="moveIntervalMs">Hareket Aralığı (ms)</label>
       <input id="moveIntervalMs" type="number" value="1500" min="400" />
+    </div>
+
+    <div class="checkbox-field">
+      <input type="checkbox" id="enableChat" />
+      <label for="enableChat">Sohbet mesajı gönder (Spam yapmaması için varsayılan olarak kapalıdır, aktif etmek için işaretleyin)</label>
     </div>
   </div>
 
@@ -136,8 +165,9 @@
       logs.scrollTop = logs.scrollHeight;
     });
 
-    socket.on("status", ({ running }) => {
-      statusBadge.textContent = running ? "Çalışıyor" : "Durduruldu";
+    socket.on("status", ({ running, activeCount }) => {
+      const countText = activeCount !== undefined ? ` (${activeCount} Aktif)` : "";
+      statusBadge.textContent = (running ? "Çalışıyor" : "Durduruldu") + countText;
       statusBadge.className = running ? "badge running" : "badge";
     });
 
@@ -148,9 +178,11 @@
         count: document.getElementById("count").value,
         prefix: document.getElementById("prefix").value,
         version: document.getElementById("version").value,
+        spawnIntervalMs: document.getElementById("spawnIntervalMs").value,
         message: document.getElementById("message").value,
         chatIntervalMs: document.getElementById("chatIntervalMs").value,
         moveIntervalMs: document.getElementById("moveIntervalMs").value,
+        enableChat: document.getElementById("enableChat").checked,
       });
     }
 
@@ -160,4 +192,3 @@
   </script>
 </body>
 </html>
-
