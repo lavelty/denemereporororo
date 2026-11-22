@@ -63,6 +63,16 @@
       font-size: 13px;
       color: #e1e7f0;
     }
+    .info-tip {
+      grid-column: 1 / -1;
+      font-size: 12px;
+      color: #9aa4b2;
+      background: #161b22;
+      border-left: 3px solid #388bfd;
+      padding: 8px 12px;
+      border-radius: 4px;
+      line-height: 1.4;
+    }
     .actions {
       margin-top: 14px;
       display: flex;
@@ -122,8 +132,8 @@
       <input id="version" value="auto" placeholder="auto veya 26.3" />
     </div>
     <div class="field">
-      <label for="spawnIntervalMs">Giriş Gecikmesi (ms - Aternos için 2000 önerilir)</label>
-      <input id="spawnIntervalMs" type="number" value="2000" min="500" />
+      <label for="spawnIntervalMs">Bot Giriş Aralığı (ms)</label>
+      <input id="spawnIntervalMs" type="number" value="1000" min="200" />
     </div>
     <div class="field">
       <label for="message">Sohbet Mesajı</label>
@@ -141,6 +151,10 @@
     <div class="checkbox-field">
       <input type="checkbox" id="enableChat" />
       <label for="enableChat">Sohbet mesajı gönder (Spam yapmaması için varsayılan olarak kapalıdır, aktif etmek için işaretleyin)</label>
+    </div>
+
+    <div class="info-tip">
+      💡 <strong>Hızlı Giriş İpucu:</strong> Aternos/Paper sunucuları varsayılan olarak aynı IP'den 4 saniyede bir bağlantıya izin verir. Panel bunu otomatik algılayıp bekleyerek her botu eksiksiz sokar. Eğer tüm botların saniyeler içinde <strong>anında (çat çat)</strong> girmesini istiyorsanız Aternos <em>Dosyalar &gt; bukkit.yml</em> dosyasından <code>connection-throttle: 0</code> yapabilirsiniz.
     </div>
   </div>
 
