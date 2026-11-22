@@ -11,8 +11,7 @@
   },
   "dependencies": {
     "express": "^4.21.0",
-    "mineflayer": "^4.23.0",
+    "mineflayer": "latest",
     "socket.io": "^4.8.0"
   }
 }
-
