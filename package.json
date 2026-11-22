@@ -1,1 +1,18 @@
+{
+  "name": "mc-bot-panel",
+  "version": "1.0.0",
+  "description": "Web control panel for multi-bot testing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "mineflayer": "^4.23.0",
+    "socket.io": "^4.8.0"
+  }
+}
 
