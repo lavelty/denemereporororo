@@ -10,8 +10,8 @@
     "node": ">=18"
   },
   "dependencies": {
-    "minecraft-protocol": "github:suisarbre/node-minecraft-protocol#port-26.3"
     "express": "^4.21.0",
+    "minecraft-protocol": "github:suisarbre/node-minecraft-protocol#port-26.3",
     "mineflayer": "latest",
     "socket.io": "^4.8.0"
   }
