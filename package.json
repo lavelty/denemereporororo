@@ -1,9 +1,10 @@
 {
   "name": "mc-bot-panel",
   "version": "1.0.0",
-  "description": "Web control panel for multi-bot testing",
+  "description": "Web control panel for multi-bot testing with Minecraft 1.8 - 26.3 support",
   "main": "server.js",
   "scripts": {
+    "postinstall": "node scripts/setup-mcdata.js",
     "start": "node server.js"
   },
   "engines": {
@@ -12,7 +13,9 @@
   "dependencies": {
     "express": "^4.21.0",
     "minecraft-protocol": "github:suisarbre/node-minecraft-protocol#port-26.3",
-    "mineflayer": "latest",
+    "mineflayer": "github:suisarbre/mineflayer#port-26.3",
+    "prismarine-chunk": "github:suisarbre/prismarine-chunk#port-26.3",
+    "prismarine-physics": "github:suisarbre/prismarine-physics#port-26.3",
     "socket.io": "^4.8.0"
   }
 }
