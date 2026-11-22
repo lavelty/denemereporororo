@@ -12,10 +12,10 @@
   },
   "dependencies": {
     "express": "^4.21.0",
-    "minecraft-protocol": "github:suisarbre/node-minecraft-protocol#port-26.3",
-    "mineflayer": "github:suisarbre/mineflayer#port-26.3",
-    "prismarine-chunk": "github:suisarbre/prismarine-chunk#port-26.3",
-    "prismarine-physics": "github:suisarbre/prismarine-physics#port-26.3",
+    "minecraft-protocol": "git+https://github.com/suisarbre/node-minecraft-protocol.git#port-26.3",
+    "mineflayer": "git+https://github.com/suisarbre/mineflayer.git#port-26.3",
+    "prismarine-chunk": "git+https://github.com/suisarbre/prismarine-chunk.git#port-26.3",
+    "prismarine-physics": "git+https://github.com/suisarbre/prismarine-physics.git#port-26.3",
     "socket.io": "^4.8.0"
   }
 }
