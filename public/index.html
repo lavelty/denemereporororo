@@ -1,1 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bot Kontrol Paneli</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 760px;
+      margin: 24px auto;
+      padding: 0 16px;
+      background: #111317;
+      color: #f0f2f5;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      background: #2a2f3a;
+    }
+    .badge.running { background: #165b33; color: #b7f5cf; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 12px; color: #aeb6c2; }
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #2b313c;
+      background: #1a1e26;
+      color: #fff;
+      font-size: 14px;
+    }
+    .actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      flex: 1;
+      padding: 11px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+    }
+    .start { background: #1e7e46; }
+    .stop { background: #9c2b2b; }
+    #logs {
+      margin-top: 18px;
+      height: 320px;
+      overflow-y: auto;
+      background: #090b0e;
+      border: 1px solid #232832;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h2>Bot Kontrol Paneli</h2>
+    <span id="statusBadge" class="badge">Durduruldu</span>
+  </div>
+
+  <div class="grid">
+    <div class="field">
+      <label for="host">Sunucu IP / Adres</label>
+      <input id="host" value="127.0.0.1" />
+    </div>
+    <div class="field">
+      <label for="port">Port</label>
+      <input id="port" type="number" value="25565" />
+    </div>
+    <div class="field">
+      <label for="count">Bot Sayısı (1-50)</label>
+      <input id="count" type="number" value="10" min="1" max="50" />
+    </div>
+    <div class="field">
+      <label for="prefix">İsim Ön Eki</label>
+      <input id="prefix" value="Bot" />
+    </div>
+    <div class="field">
+      <label for="version">Sürüm (`auto` veya örn. `1.20.4`)</label>
+      <input id="version" value="auto" />
+    </div>
+    <div class="field">
+      <label for="message">Sohbet Mesajı</label>
+      <input id="message" value="Hello world" />
+    </div>
+    <div class="field">
+      <label for="chatIntervalMs">Mesaj Aralığı (ms)</label>
+      <input id="chatIntervalMs" type="number" value="1000" min="200" />
+    </div>
+    <div class="field">
+      <label for="moveIntervalMs">Hareket Aralığı (ms)</label>
+      <input id="moveIntervalMs" type="number" value="1500" min="400" />
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="start" onclick="startBots()">Başlat</button>
+    <button class="stop" onclick="stopBots()">Durdur</button>
+  </div>
+
+  <div id="logs"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const logs = document.getElementById("logs");
+    const statusBadge = document.getElementById("statusBadge");
+
+    socket.on("log", (msg) => {
+      const line = document.createElement("div");
+      const time = new Date().toLocaleTimeString("tr-TR");
+      line.textContent = `[${time}] ${msg}`;
+      logs.appendChild(line);
+      logs.scrollTop = logs.scrollHeight;
+    });
+
+    socket.on("status", ({ running }) => {
+      statusBadge.textContent = running ? "Çalışıyor" : "Durduruldu";
+      statusBadge.className = running ? "badge running" : "badge";
+    });
+
+    function startBots() {
+      socket.emit("start_bots", {
+        host: document.getElementById("host").value,
+        port: document.getElementById("port").value,
+        count: document.getElementById("count").value,
+        prefix: document.getElementById("prefix").value,
+        version: document.getElementById("version").value,
+        message: document.getElementById("message").value,
+        chatIntervalMs: document.getElementById("chatIntervalMs").value,
+        moveIntervalMs: document.getElementById("moveIntervalMs").value,
+      });
+    }
+
+    function stopBots() {
+      socket.emit("stop_bots");
+    }
+  </script>
+</body>
+</html>
 
